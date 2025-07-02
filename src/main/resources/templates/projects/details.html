@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали проекта</title>
+</head>
+<body>
+    <div th:if="${project}">
+        <h1 th:text="${project.name}"></h1>
+        <p th:text="${project.description} ?: 'Нет описания'"></p>
+        <p>Статус: <span th:text="${project.status}"></span></p>
+        <p>Создан: <span th:text="${#temporals.format(project.createdAt, 'dd.MM.yyyy')}"></span></p>
+
+        <!-- Упрощенная форма без ProjectRequest -->
+        <form th:action="@{/details/{id}/complete(id=${project.id})}" method="post">
+            <button type="submit"
+                    th:disabled="${project.status == T(com.example.projectmanager.entity.Status).COMPLETED}">
+                Пометить как завершённый
+            </button>
+        </form>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <a th:href="@{/projects-list}">Назад к списку</a>
+    </div>
+</body>
+</html>

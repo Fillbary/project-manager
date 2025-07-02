@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание проекта</title>
+</head>
+<body>
+    <form th:action="@{/create}" method="post" th:object="${projectRequest}">
+        <!-- Поле name (обязательное) -->
+        <div>
+            <label for="name">Название проекта:</label>
+            <input type="text" id="name" th:field="*{name}" placeholder="Введите название (3-100 символов)">
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-message"></span>
+        </div>
+
+        <!-- Поле description (необязательное) -->
+        <div>
+            <label for="description">Описание:</label>
+            <textarea id="description" th:field="*{description}"
+                     placeholder="Необязательное описание проекта"></textarea>
+        </div>
+
+        <button type="submit">Создать проект</button>
+    </form>
+
+    <a href="/home">На главную</a>
+    <a th:href="@{/projects-list}">Назад к списку</a>
+</body>
+</html>

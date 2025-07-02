@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Мои проекты</h1>
+    <div th:if="${message}" th:text="${message}" class="alert"></div>
+    <ul>
+        <li th:each="project : ${projects}">
+            <a th:href="@{/details/{id}(id=${project.id})}" th:text="${project.name}"></a>
+            <p>Статус: <span th:text="${project.status}"></span></p>
+            <p>Создан: <span th:text="${#temporals.format(project.createdAt, 'dd.MM.yyyy')}"></span></p>
+        </li>
+    </ul>
+    <a href="/create">Создать новый проект</a>
+    <a href="/home">На главную</a>
+</body>
+</html>

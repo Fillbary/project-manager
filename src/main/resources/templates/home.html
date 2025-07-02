@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Главная страница</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background-color: #f8f9fa;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .auth-buttons {
+            margin-top: 1rem;
+        }
+        .project-card {
+            cursor: default;
+            margin-bottom: 1rem;
+        }
+        .projects-container {
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/home">Менеджер проектов</a>
+            <div class="navbar-nav">
+                <!-- Для авторизованных -->
+                <div sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/projects-list}">Мои проекты</a>
+                </div>
+                <div sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/logout}">Выйти</a>
+                </div>
+                <!-- Для гостей -->
+                <div sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/login}">Войти</a>
+                </div>
+                <div sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/register}">Регистрация</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container mt-5">
+        <!-- Блок для авторизованных пользователей -->
+        <div sec:authorize="isAuthenticated()">
+            <div class="hero-section">
+                <h1>Добро пожаловать, <span sec:authentication="name"></span>!</h1>
+                <p class="lead">Управляйте своими проектами и задачами в одном месте.</p>
+                <div class="mt-4">
+                    <a th:href="@{/projects-list}" class="btn btn-primary btn-lg">Мои проекты</a>
+                    <a th:href="@{/create}" class="btn btn-success btn-lg ms-3">Создать проект</a>
+                </div>
+            </div>
+
+            <!-- Список проектов (только просмотр) -->
+            <div class="projects-container">
+                <h3 class="text-center mb-4">Ваши проекты</h3>
+                <div class="row">
+                    <div class="col-md-6 col-lg-4" th:each="project : ${projects}">
+                        <div class="card project-card">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${project.name}">Название проекта</h5>
+                                <p class="card-text" th:text="${project.description}">Описание проекта</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Блок для неавторизованных пользователей -->
+        <div sec:authorize="!isAuthenticated()">
+            <div class="hero-section">
+                <h1>Добро пожаловать в менеджер проектов!</h1>
+                <p class="lead">Создавайте проекты, управляйте задачами и сотрудничайте с командой.</p>
+                <div class="auth-buttons">
+                    <a th:href="@{/login}" class="btn btn-primary btn-lg">Войти</a>
+                    <a th:href="@{/register}" class="btn btn-outline-primary btn-lg ms-3">Зарегистрироваться</a>
+                </div>
+            </div>
+
+            <!-- Примеры проектов (для гостей) -->
+            <div class="projects-container">
+                <h3 class="text-center mb-4">Примеры проектов</h3>
+                <div class="row">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card project-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Веб-приложение</h5>
+                                <p class="card-text">Разработка интернет-магазина</p>
+                                <span class="badge bg-success">В работе</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card project-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Мобильное приложение</h5>
+                                <p class="card-text">Приложение для учета финансов</p>
+                                <span class="badge bg-warning text-dark">В планах</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card project-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Анализ данных</h5>
+                                <p class="card-text">Исследование рынка</p>
+                                <span class="badge bg-primary">Завершен</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
