@@ -1,5 +1,7 @@
 package com.example.projectmanager.dto.request;
 
+import com.example.projectmanager.entity.Status;
+import com.example.projectmanager.entity.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -9,6 +11,26 @@ public class ProjectRequest {
     private String name;
 
     private String description;
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    private User owner;
+
+    public User getOwner() {
+        return owner;
+    }
+
+    private Status status;
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
     public void setId(Long id) {
         this.id = id;

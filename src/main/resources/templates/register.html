@@ -3,83 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Registration</title>
+    <title>Registration | ProjectFlow</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .error-message {
-            color: #dc3545;
-            font-size: 0.875em;
-        }
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
 </head>
-<body class="bg-light">
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white text-center">
-                    <h3>Create Account</h3>
-                </div>
-                <div class="card-body">
-                    <form th:action="@{/register}" th:object="${registerRequest}" method="post">
+<body>
+    <!-- Навигация (единая для всех страниц) -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/home">ProjectFlow</a>
+            <div class="navbar-nav">
+                <a class="nav-link" th:href="@{/login}">Войти</a>
+                <a class="nav-link" th:href="@{/register}">Регистрация</a>
+            </div>
+        </div>
+    </nav>
 
-                        <!-- Username Field -->
-                        <div class="form-group">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control"
-                                   id="username" th:field="*{username}"
-                                   placeholder="Enter username (3-20 chars)">
-                            <div class="error-message" th:if="${#fields.hasErrors('username')}"
-                                 th:errors="*{username}"></div>
-                        </div>
+    <!-- Основной контент -->
+    <main class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="registration-card">
+                    <div class="registration-card__header">
+                        <h3 class="registration-card__title">Создание аккаунта</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <form class="registration-form" th:action="@{/register}" th:object="${registerRequest}" method="post">
+                            <!-- Имя пользователя -->
+                            <div class="mb-4">
+                                <label for="username" class="form-label">Имя пользователя</label>
+                                <input type="text" class="form-control"
+                                       id="username" th:field="*{username}"
+                                       placeholder="От 3 до 20 символов">
+                                <div class="error-message" th:if="${#fields.hasErrors('username')}"
+                                     th:errors="*{username}"></div>
+                            </div>
 
-                        <!-- Email Field -->
-                        <div class="form-group">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control"
-                                   id="email" th:field="*{email}"
-                                   placeholder="Enter valid email">
-                            <div class="error-message" th:if="${#fields.hasErrors('email')}"
-                                 th:errors="*{email}"></div>
-                        </div>
+                            <!-- Email -->
+                            <div class="mb-4">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control"
+                                       id="email" th:field="*{email}"
+                                       placeholder="example@domain.com">
+                                <div class="error-message" th:if="${#fields.hasErrors('email')}"
+                                     th:errors="*{email}"></div>
+                            </div>
 
-                        <!-- Password Field -->
-                        <div class="form-group">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control"
-                                   id="password" th:field="*{password}"
-                                   placeholder="Password (6-40 chars)">
-                            <div class="error-message" th:if="${#fields.hasErrors('password')}"
-                                 th:errors="*{password}"></div>
-                        </div>
+                            <!-- Пароль -->
+                            <div class="mb-4">
+                                <label for="password" class="form-label">Пароль</label>
+                                <input type="password" class="form-control"
+                                       id="password" th:field="*{password}"
+                                       placeholder="Не менее 6 символов">
+                                <div class="error-message" th:if="${#fields.hasErrors('password')}"
+                                     th:errors="*{password}"></div>
+                                <div class="password-hint">Используйте буквы, цифры и специальные символы</div>
+                            </div>
 
-                        <!-- Confirm Password Field -->
-                        <div class="form-group">
-                            <label for="confirmPassword" class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control"
-                                   id="confirmPassword" th:field="*{confirmPassword}"
-                                   placeholder="Repeat your password">
-                            <div class="error-message" th:if="${#fields.hasErrors('confirmPassword')}"
-                                 th:errors="*{confirmPassword}"></div>
-                        </div>
+                            <!-- Подтверждение пароля -->
+                            <div class="mb-4">
+                                <label for="confirmPassword" class="form-label">Подтвердите пароль</label>
+                                <input type="password" class="form-control"
+                                       id="confirmPassword" th:field="*{confirmPassword}"
+                                       placeholder="Повторите ваш пароль">
+                                <div class="error-message" th:if="${#fields.hasErrors('confirmPassword')}"
+                                     th:errors="*{confirmPassword}"></div>
+                            </div>
 
-                        <!-- Submit Button -->
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
-                        </div>
+                            <!-- Кнопка регистрации -->
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary registration-form__submit">
+                                    Зарегистрироваться
+                                </button>
+                            </div>
 
-                        <!-- Login Link -->
-                        <div class="text-center mt-3">
-                            <p>Already have an account? <a th:href="@{/login}">Sign in</a></p>
-                        </div>
-                    </form>
+                            <!-- Ссылка на вход -->
+                            <div class="text-center mt-4">
+                                <p>Уже есть аккаунт?
+                                    <a th:href="@{/login}" class="registration-form__switch">Войти</a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

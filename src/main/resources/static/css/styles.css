@@ -1,0 +1,607 @@
+/* Основные переменные */
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3f37c9;
+    --accent-color: #4cc9f0;
+    --dark-color: #1a1a2e;
+    --light-color: #f8f9fa;
+    --success-color: #38b000;
+    --warning-color: #ffaa00;
+    --danger-color: #ef233c;
+}
+
+/* Базовые стили */
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f7;
+}
+
+/* Навигация */
+.navbar {
+    background-color: var(--dark-color) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--accent-color) !important;
+}
+
+/* Герой-секция */
+.hero {
+    background: linear-gradient(135deg, var(--light-color), #e9ecef);
+    padding: 5rem 0;
+    border-radius: 0 0 20px 20px;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.hero__title {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--dark-color);
+}
+
+.hero__lead {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+/* Кнопки */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    padding: 0.5rem 1.75rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+}
+
+/* Карточки проектов */
+.projects {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.project-card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 1.5rem;
+    height: 100%;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.project-card__title {
+    font-weight: 500;
+    color: var(--dark-color);
+    margin-bottom: 0.75rem;
+}
+
+.project-card__description {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+/* Бейджи статусов */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+    border-radius: 50px;
+}
+
+.bg-success {
+    background-color: var(--success-color) !important;
+}
+
+.bg-warning {
+    background-color: var(--warning-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .hero {
+        padding: 3rem 0;
+    }
+
+    .hero__title {
+        font-size: 2rem;
+    }
+}
+
+/* Стили для формы аутентификации */
+.auth-container {
+    max-width: 500px;
+    margin: 5rem auto;
+}
+
+.auth-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.auth-card__header {
+    background-color: var(--dark-color);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.auth-card__title {
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.75rem;
+}
+
+.auth-card__body {
+    padding: 2rem;
+}
+
+.auth-form .form-label {
+    font-weight: 500;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}
+
+.auth-form .form-control {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.auth-form .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.15);
+}
+
+.auth-form__submit {
+    width: 100%;
+    padding: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    margin-top: 1rem;
+}
+
+.auth-form__switch {
+    width: 100%;
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.auth-form__switch:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Дополнительные стили для формы регистрации */
+.registration-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-top: 2rem;
+}
+
+.registration-card__header {
+    background-color: var(--dark-color);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.registration-card__title {
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.75rem;
+}
+
+.registration-form .form-label {
+    font-weight: 500;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}
+
+.registration-form .form-control {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.registration-form .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.15);
+}
+
+.registration-form__submit {
+    width: 100%;
+    padding: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    margin-top: 1rem;
+}
+
+.registration-form__switch {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.registration-form__switch:hover {
+    color: var(--secondary-color);
+}
+
+.error-message {
+    color: var(--danger-color);
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+
+.password-hint {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+/* Стили для формы создания проекта */
+.project-form-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.project-form__title {
+    color: var(--dark-color);
+    margin-bottom: 2rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.project-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.project-form input[type="text"],
+.project-form textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.project-form input[type="text"]:focus,
+.project-form textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.15);
+    outline: none;
+}
+
+.project-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.project-form__actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    gap: 1rem;
+}
+
+.project-form__submit {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-grow: 1;
+}
+
+.project-form__submit:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+.project-form__link {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    transition: all 0.3s ease;
+    flex-grow: 1;
+}
+
+.project-form__link:hover {
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+}
+
+.project-form__link--secondary {
+    color: #666;
+    border-color: #ddd;
+}
+
+.project-form__link--secondary:hover {
+    background-color: #f5f5f5;
+    color: #666;
+    border-color: #ddd;
+}
+
+/* Стили для страницы деталей проекта */
+.project-details-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.project-details__title {
+    color: var(--dark-color);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+.project-details__description {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #555;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.project-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: #f5f5f7;
+    border-radius: 8px;
+}
+
+.project-meta__item {
+    margin-bottom: 0;
+}
+
+.project-meta__label {
+    font-weight: 500;
+    color: var(--dark-color);
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.project-meta__value {
+    color: #555;
+    font-size: 1.05rem;
+}
+
+.project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+/* Модальное окно */
+.modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.modal-title {
+    color: var(--dark-color);
+    font-weight: 600;
+}
+
+.modal-footer {
+    border-top: none;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .project-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .project-actions {
+        flex-direction: column;
+    }
+
+    .project-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Стили для списка проектов */
+.projects-list-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.projects-list__title {
+    color: var(--dark-color);
+    margin-bottom: 2rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+.projects-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.project-item {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.project-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+}
+
+.project-item__link {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.project-item__link:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.project-item__meta {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+}
+
+.project-item__status {
+    display: inline-block;
+    padding: 0.25em 0.6em;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-completed {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.status-in-progress {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.status-planned {
+    background-color: var(--warning-color);
+    color: black;
+}
+
+.projects-list__actions {
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .projects-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Стили формы редактирования */
+.edit-project-form {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.edit-project__title {
+    color: var(--dark-color);
+    margin-bottom: 2rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+.edit-project__status {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border-radius: 50px;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.form-edit-label {
+    font-weight: 500;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}

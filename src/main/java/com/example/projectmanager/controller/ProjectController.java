@@ -2,8 +2,12 @@ package com.example.projectmanager.controller;
 
 import com.example.projectmanager.dto.request.ProjectRequest;
 import com.example.projectmanager.dto.response.ProjectResponse;
+import com.example.projectmanager.entity.Project;
+import com.example.projectmanager.entity.Status;
 import com.example.projectmanager.entity.User;
+import com.example.projectmanager.exception.ResourceNotFoundException;
 import com.example.projectmanager.service.ProjectService;
+import jakarta.validation.Valid;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -56,6 +60,49 @@ public class ProjectController {
         }
     }
 
+    @GetMapping("/details/{id}/edit-project")
+    public String showEditForm(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User owner,
+            Model model) {
+
+        ProjectResponse project = projectService.getProjectById(id, owner);
+
+        ProjectRequest updateRequest = new ProjectRequest();
+        updateRequest.setName(project.getName());
+        updateRequest.setDescription(project.getDescription());
+        updateRequest.setStatus(project.getStatus());
+
+        model.addAttribute("projectId", id);
+        model.addAttribute("updateRequest", updateRequest);
+
+        return "projects/edit-project";
+    }
+
+    @PostMapping("/details/{id}/edit-project")
+    public String updateProject(
+            @PathVariable Long id,
+            @Valid @ModelAttribute("updateRequest") ProjectRequest updateRequest,
+            @AuthenticationPrincipal User owner,
+            RedirectAttributes redirectAttributes) {
+
+
+        try {
+            updateRequest.setOwner(owner);
+
+            Project updatedProject = projectService.updateProject(id, updateRequest);
+
+            redirectAttributes.addFlashAttribute("success",
+                "Проект '" + updatedProject.getName() + "' успешно обновлен");
+
+            return "redirect:/details/" + id;
+
+        } catch (ResourceNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/details/" + id + "/edit-project";
+        }
+    }
+
     @GetMapping("/projects-list")
     public String getUserProjects(
             @AuthenticationPrincipal User owner,
@@ -83,8 +130,23 @@ public class ProjectController {
             @AuthenticationPrincipal User owner,
             RedirectAttributes redirectAttributes) {
 
-        projectService.markProjectAsCompleted(id, owner);
-        redirectAttributes.addFlashAttribute("success", "Проект помечен как завершённый");
+        Status status = projectService.markProjectAsCompleted(id, owner);
+        String message = status == Status.COMPLETED
+                ? "Проект помечен как завершённый"
+                : "Проект возвращён в работу";
+
+        redirectAttributes.addFlashAttribute("success", message);
         return "redirect:/details/" + id;
+    }
+
+    @PostMapping("/details/{id}/delete")
+    public String deleteProject(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User owner,
+            RedirectAttributes redirectAttributes) {
+
+        projectService.deleteProject(id, owner);
+        redirectAttributes.addFlashAttribute("success", "Проект удален");
+        return "redirect:/projects-list";
     }
 }

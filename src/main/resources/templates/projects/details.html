@@ -1,26 +1,120 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Детали проекта</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Детали проекта | ProjectFlow</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
 </head>
 <body>
-    <div th:if="${project}">
-        <h1 th:text="${project.name}"></h1>
-        <p th:text="${project.description} ?: 'Нет описания'"></p>
-        <p>Статус: <span th:text="${project.status}"></span></p>
-        <p>Создан: <span th:text="${#temporals.format(project.createdAt, 'dd.MM.yyyy')}"></span></p>
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/home">ProjectFlow</a>
+            <div class="navbar-nav">
+                <a class="nav-link" th:href="@{/projects-list}">Мои проекты</a>
+                <a class="nav-link" th:href="@{/logout}">Выйти</a>
+            </div>
+        </div>
+    </nav>
 
-        <!-- Упрощенная форма без ProjectRequest -->
-        <form th:action="@{/details/{id}/complete(id=${project.id})}" method="post">
-            <button type="submit"
-                    th:disabled="${project.status == T(com.example.projectmanager.entity.Status).COMPLETED}">
-                Пометить как завершённый
-            </button>
-        </form>
+    <!-- Основной контент -->
+    <main class="container">
+        <div class="project-details-container" th:if="${project}">
+            <!-- Заголовок и описание -->
+            <h1 class="project-details__title" th:text="${project.name}"></h1>
+            <div class="project-details__description" th:if="${project.description}" th:text="${project.description}"></div>
+            <div class="project-details__description" th:unless="${project.description}">Описание отсутствует</div>
 
-        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-        <a th:href="@{/projects-list}">Назад к списку</a>
-    </div>
+            <!-- Мета-информация -->
+            <div class="project-meta">
+                <div class="project-meta__item">
+                    <span class="project-meta__label">Статус</span>
+                    <span class="project-meta__value">
+                       <span th:switch="${project.status.name()}" class="badge">
+                            <span th:case="'COMPLETED'" class="status-completed">Завершен</span>
+                            <span th:case="'IN_PROGRESS'" class="status-in-progress">В работе</span>
+                            <span th:case="*" class="status-planned">Запланирован</span>
+                       </span>
+                    </span>
+                </div>
+
+                <div class="project-meta__item">
+                    <span class="project-meta__label">Создан</span>
+                    <span class="project-meta__value" th:text="${#temporals.format(project.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+                </div>
+
+<!--                <div class="project-meta__item" th:if="${project.updatedAt}">-->
+<!--                    <span class="project-meta__label">Обновлен</span>-->
+<!--                    <span class="project-meta__value" th:text="${#temporals.format(project.updatedAt, 'dd.MM.yyyy HH:mm')}"></span>-->
+<!--                </div>-->
+            </div>
+
+            <!-- Действия -->
+            <div class="project-actions">
+                <!-- Кнопка завершения/возврата в работу -->
+                <form th:action="@{/details/{id}/complete(id=${project.id})}" method="post">
+                    <button type="submit"
+                            class="btn"
+                            th:classappend="${project.status == T(com.example.projectmanager.entity.Status).COMPLETED}
+                                          ? 'btn-outline-warning' : 'btn-outline-success'">
+                        <span th:switch="${project.status.name()}" class="badge">
+                            <span th:case="'COMPLETED'" class="status-completed">Завершен</span>
+                            <span th:case="'IN_PROGRESS'" class="status-in-progress">В работе</span>
+                            <span th:case="*" class="status-planned">Запланирован</span>
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Кнопка редактирования -->
+                <a th:href="@{/details/{id}/edit-project(id=${project.id})}" class="btn btn-outline-primary">
+                    Редактировать
+                </a>
+
+                <!-- Кнопка удаления -->
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal">
+                    Удалить проект
+                </button>
+
+                <!-- Кнопка "Назад" -->
+                <a th:href="@{/projects-list}" class="btn btn-outline-secondary">
+                    ← Назад к списку
+                </a>
+            </div>
+
+            <!-- Модальное окно подтверждения удаления -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Подтверждение удаления</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Вы уверены, что хотите удалить проект <strong th:text="${project.name}"></strong>?</p>
+                            <p class="text-danger">Это действие нельзя отменить.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <form th:action="@{/details/{id}/delete(id=${project.id})}" method="post">
+                                <button type="submit" class="btn btn-danger">Удалить проект</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Уведомления -->
+            <div th:if="${success}" class="alert alert-success mt-4" role="alert" th:text="${success}"></div>
+        </div>
+    </main>
+
+    <!-- Подключаем Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

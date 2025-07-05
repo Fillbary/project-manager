@@ -18,10 +18,10 @@ import java.util.List;
 
 @Service
 public class ProjectService {
-    private final ProjectRepository projectRepository;
+    private final ProjectRepository PROJECT_REPOSITORY;
 
     public ProjectService(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+        this.PROJECT_REPOSITORY = projectRepository;
     }
 
     @Transactional
@@ -30,7 +30,7 @@ public class ProjectService {
         if(request.getName() == null || request.getName().isEmpty()) {
             throw new IllegalArgumentException("Project name is required");
         }
-        if (projectRepository.existsByNameAndOwner_Id(request.getName(), owner.getId())) {
+        if (PROJECT_REPOSITORY.existsByNameAndOwner_Id(request.getName(), owner.getId())) {
             throw new ConflictException("A project with this name already exists");
         }
         if (owner == null) {
@@ -38,30 +38,48 @@ public class ProjectService {
         }
 
         Project project = mapToProject(request, owner);
-        projectRepository.save(project);
+        PROJECT_REPOSITORY.save(project);
     }
 
-    public void markProjectAsCompleted(Long id, User owner) {
-        Project project = projectRepository.findByIdAndOwner(id, owner)
+    public Project updateProject(Long id, ProjectRequest request) {
+        Project project = PROJECT_REPOSITORY.findByIdAndOwner(id, request.getOwner())
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Project not found with id: " + id + " and owner: " + request.getOwner().getUsername()));
+
+        if (!project.getName().equals(request.getName())) {
+            project.setName(request.getName());
+        }
+
+        if (request.getDescription() != null &&
+            !request.getDescription().equals(project.getDescription())) {
+            project.setDescription(request.getDescription());
+        }
+
+        return PROJECT_REPOSITORY.save(project);
+    }
+
+    public Status markProjectAsCompleted(Long id, User owner) {
+        Project project = PROJECT_REPOSITORY.findByIdAndOwner(id, owner)
         .orElseThrow(() -> new ResourceNotFoundException(
             "Project not found with id: " + id + " and owner: " + owner.getUsername()));
 
-        if (project.getStatus() != Status.COMPLETED) {
-        project.setStatus(Status.COMPLETED);
-        projectRepository.save(project);
-        }
+        Status status = project.getStatus() == Status.COMPLETED ? Status.IN_PROGRESS : Status.COMPLETED;
+
+        project.setStatus(status);
+        PROJECT_REPOSITORY.save(project);
+        return status;
     }
 
     public void deleteProject(Long id, User owner) {
-        Project project = projectRepository.findByIdAndOwner(id, owner)
+        Project project = PROJECT_REPOSITORY.findByIdAndOwner(id, owner)
         .orElseThrow(() -> new ResourceNotFoundException(
             "Project not found with id: " + id + " and owner: " + owner.getUsername()));
 
-        projectRepository.delete(project);
+        PROJECT_REPOSITORY.delete(project);
     }
 
     public List<ProjectResponse> getProjectsByOwner(User owner) {
-        List<Project> projects = projectRepository.findAllByOwner(owner);
+        List<Project> projects = PROJECT_REPOSITORY.findAllByOwner(owner);
         List<ProjectResponse> responseList = new ArrayList<>();
         //Переписать как stream
         //Преобразуем каждый проект в ответ и добавляем в список ответов
@@ -73,7 +91,7 @@ public class ProjectService {
 
     @Transactional(readOnly = true)
     public ProjectResponse getProjectById(Long id, User owner) {
-        Project project = projectRepository.findByIdAndOwner(id, owner)
+        Project project = PROJECT_REPOSITORY.findByIdAndOwner(id, owner)
         .orElseThrow(() -> new ResourceNotFoundException(
             "Project not found with id: " + id + " and owner: " + owner.getUsername()));
 
@@ -86,7 +104,8 @@ public class ProjectService {
             project.getName(),
             project.getDescription(),
             project.getCreatedAt(),
-            project.getOwner().getUsername()
+            project.getOwner().getUsername(),
+            project.getStatus()
         );
     }
 
