@@ -104,6 +104,7 @@ public class ProjectService {
             project.getName(),
             project.getDescription(),
             project.getCreatedAt(),
+            project.getUpdatedAt(),
             project.getOwner().getUsername(),
             project.getStatus()
         );

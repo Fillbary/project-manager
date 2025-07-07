@@ -1,20 +1,16 @@
 package com.example.projectmanager.entity;
 
 import jakarta.persistence.*;
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import jdk.jfr.Timestamp;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
-@Table(name = "projects")
-public class Project {
+@Table(name = "tasks")
+public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +25,10 @@ public class Project {
     @Size(max = 500)
     private String description;
 
+    private Status status;
+
+    private LocalDateTime deadline;
+
     @Column
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -41,34 +41,29 @@ public class Project {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @Column
-    private Status status;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
-
-    public Project(String name, String description, LocalDateTime createdAt, LocalDateTime updatedAt, User owner) {
+    public Task(String name, String description, Status status, LocalDateTime deadline,
+                LocalDateTime createdAt, LocalDateTime updatedAt, User owner, Project project) {
         this.name = name;
         this.description = description;
+        this.status = status;
+        this.deadline = deadline;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.owner = owner;
-        this.status = Status.IN_PROGRESS;
+        this.project = project;
     }
 
-    public Project() {}
+    public Task() {}
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -88,6 +83,22 @@ public class Project {
         this.description = description;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = deadline;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -100,11 +111,23 @@ public class Project {
         return updatedAt;
     }
 
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public User getOwner() {
         return owner;
     }
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

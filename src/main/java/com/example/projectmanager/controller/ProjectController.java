@@ -67,7 +67,6 @@ public class ProjectController {
             Model model) {
 
         ProjectResponse project = projectService.getProjectById(id, owner);
-
         ProjectRequest updateRequest = new ProjectRequest();
         updateRequest.setName(project.getName());
         updateRequest.setDescription(project.getDescription());
@@ -86,17 +85,12 @@ public class ProjectController {
             @AuthenticationPrincipal User owner,
             RedirectAttributes redirectAttributes) {
 
-
         try {
             updateRequest.setOwner(owner);
-
             Project updatedProject = projectService.updateProject(id, updateRequest);
-
             redirectAttributes.addFlashAttribute("success",
                 "Проект '" + updatedProject.getName() + "' успешно обновлен");
-
             return "redirect:/details/" + id;
-
         } catch (ResourceNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/details/" + id + "/edit-project";

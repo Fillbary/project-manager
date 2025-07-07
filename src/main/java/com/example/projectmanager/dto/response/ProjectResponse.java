@@ -9,14 +9,16 @@ public class ProjectResponse {
     private String name;
     private String description;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private String ownerName;
     private Status status;
-
-    public ProjectResponse(long id, String name, String description, LocalDateTime createdAd, String ownerName, Status status) {
+    public ProjectResponse(long id, String name, String description, LocalDateTime createdAd,
+                           LocalDateTime updatedAt, String ownerName, Status status) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.createdAt = createdAd;
+        this.updatedAt = updatedAt;
         this.ownerName = ownerName;
         this.status = status;
     }
@@ -53,6 +55,14 @@ public class ProjectResponse {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public String getOwnerName() {

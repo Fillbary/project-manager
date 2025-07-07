@@ -40,6 +40,11 @@
                         <span th:text="${#temporals.format(project.createdAt, 'dd.MM.yyyy')}"></span>
                     </div>
 
+                    <div class="project-meta__item" th:if="${project.updatedAt}">
+                        <span class="project-meta__label">Обновлен</span>
+                        <span class="project-meta__value" th:text="${#temporals.format(project.updatedAt, 'dd.MM.yyyy HH:mm')}"></span>
+                    </div>
+
                     <div class="project-item__meta">
                         <span th:switch="${project.status.name()}" class="badge">
                             <span th:case="'COMPLETED'" class="status-completed">Завершен</span>
