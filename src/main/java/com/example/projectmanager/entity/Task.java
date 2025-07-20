@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,9 +26,8 @@ public class Task {
     @Size(max = 500)
     private String description;
 
-    private Status status;
-
-    private LocalDateTime deadline;
+    @Column
+    private LocalDate deadline;
 
     @Column
     @CreationTimestamp
@@ -37,23 +37,25 @@ public class Task {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "owner_id", nullable = false)
+//    private User owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    public Task(String name, String description, Status status, LocalDateTime deadline,
-                LocalDateTime createdAt, LocalDateTime updatedAt, User owner, Project project) {
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    public Task(String name, String description, Status status, LocalDate deadline,
+                LocalDateTime createdAt, LocalDateTime updatedAt, Project project) {
         this.name = name;
         this.description = description;
         this.status = status;
         this.deadline = deadline;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.owner = owner;
         this.project = project;
     }
 
@@ -91,11 +93,11 @@ public class Task {
         this.status = status;
     }
 
-    public LocalDateTime getDeadline() {
+    public LocalDate getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDateTime deadline) {
+    public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
     }
 
@@ -115,13 +117,6 @@ public class Task {
         this.updatedAt = updatedAt;
     }
 
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
 
     public Project getProject() {
         return project;

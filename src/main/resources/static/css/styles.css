@@ -605,3 +605,53 @@ body {
     color: var(--dark-color);
     margin-bottom: 0.5rem;
 }
+
+/* Стили для задач */
+
+.task-card {
+    border-left: 4px solid;
+    margin-bottom: 1rem;
+}
+.task-status-NOT_STARTED {
+    border-left-color: #6c757d;
+}
+.task-status-IN_PROGRESS {
+    border-left-color: #0d6efd;
+}
+.task-status-COMPLETED {
+    border-left-color: #198754;
+}
+.task-status-OVERDUE {
+    border-left-color: #dc3545;
+}
+.task-actions {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.task-card:hover .task-actions {
+    opacity: 1;
+}
+
+/* Стили для кнопок задач */
+.task-actions {
+    padding: 1rem 0;
+    margin: 1rem 0;
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.task-actions .btn {
+    margin: 0.25rem 0;
+    min-width: 160px;
+}
+
+@media (max-width: 768px) {
+    .task-actions {
+        flex-direction: column;
+        gap: 0.5rem !important;
+    }
+
+    .task-actions .btn {
+        width: 100%;
+    }
+}

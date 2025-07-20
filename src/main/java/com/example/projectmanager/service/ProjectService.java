@@ -2,12 +2,15 @@ package com.example.projectmanager.service;
 
 import com.example.projectmanager.dto.request.ProjectRequest;
 import com.example.projectmanager.dto.response.ProjectResponse;
+import com.example.projectmanager.dto.response.TaskResponse;
 import com.example.projectmanager.entity.Project;
 import com.example.projectmanager.entity.Status;
+import com.example.projectmanager.entity.Task;
 import com.example.projectmanager.entity.User;
 import com.example.projectmanager.exception.ConflictException;
 import com.example.projectmanager.exception.ResourceNotFoundException;
 import com.example.projectmanager.repositorу.ProjectRepository;
+import com.example.projectmanager.repositorу.TaskRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +22,13 @@ import java.util.List;
 @Service
 public class ProjectService {
     private final ProjectRepository PROJECT_REPOSITORY;
+    private final TaskService TASK_SERVICE;
+    private final TaskRepository TASK_REPOSITORY;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, TaskService taskService, TaskRepository taskRepository) {
         this.PROJECT_REPOSITORY = projectRepository;
+        this.TASK_SERVICE = taskService;
+        this.TASK_REPOSITORY = taskRepository;
     }
 
     @Transactional
@@ -33,18 +40,13 @@ public class ProjectService {
         if (PROJECT_REPOSITORY.existsByNameAndOwner_Id(request.getName(), owner.getId())) {
             throw new ConflictException("A project with this name already exists");
         }
-        if (owner == null) {
-            throw new AccessDeniedException("User not authenticated");
-        }
 
         Project project = mapToProject(request, owner);
         PROJECT_REPOSITORY.save(project);
     }
 
     public Project updateProject(Long id, ProjectRequest request) {
-        Project project = PROJECT_REPOSITORY.findByIdAndOwner(id, request.getOwner())
-        .orElseThrow(() -> new ResourceNotFoundException(
-            "Project not found with id: " + id + " and owner: " + request.getOwner().getUsername()));
+        Project project = availabilityProjectCheck(id, request.getOwner());
 
         if (!project.getName().equals(request.getName())) {
             project.setName(request.getName());
@@ -58,23 +60,21 @@ public class ProjectService {
         return PROJECT_REPOSITORY.save(project);
     }
 
+    @Transactional
     public Status markProjectAsCompleted(Long id, User owner) {
-        Project project = PROJECT_REPOSITORY.findByIdAndOwner(id, owner)
-        .orElseThrow(() -> new ResourceNotFoundException(
-            "Project not found with id: " + id + " and owner: " + owner.getUsername()));
-
-        Status status = project.getStatus() == Status.COMPLETED ? Status.IN_PROGRESS : Status.COMPLETED;
+        Project project = availabilityProjectCheck(id, owner);
+        Status status = project.getStatus() == Status.COMPLETED
+                ? Status.IN_PROGRESS
+                : Status.COMPLETED;
 
         project.setStatus(status);
         PROJECT_REPOSITORY.save(project);
+        TASK_SERVICE.completeAllTasks(project.getId());
         return status;
     }
 
     public void deleteProject(Long id, User owner) {
-        Project project = PROJECT_REPOSITORY.findByIdAndOwner(id, owner)
-        .orElseThrow(() -> new ResourceNotFoundException(
-            "Project not found with id: " + id + " and owner: " + owner.getUsername()));
-
+        Project project = availabilityProjectCheck(id, owner);
         PROJECT_REPOSITORY.delete(project);
     }
 
@@ -90,12 +90,16 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public ProjectResponse getProjectById(Long id, User owner) {
-        Project project = PROJECT_REPOSITORY.findByIdAndOwner(id, owner)
-        .orElseThrow(() -> new ResourceNotFoundException(
-            "Project not found with id: " + id + " and owner: " + owner.getUsername()));
+    public ProjectResponse getProjectByIdWithTasks(Long id, User owner) {
+        List<TaskResponse> taskResponses = TASK_REPOSITORY.findAllTasksByProjectId(id)
+                .stream()
+                .map(this::mapToTaskResponse)
+                .toList();
 
-        return mapToProjectResponse(project);
+        Project project = availabilityProjectCheck(id, owner);
+        ProjectResponse response = mapToProjectResponse(project);
+        response.setTasks(taskResponses);
+        return response;
     }
 
     private ProjectResponse mapToProjectResponse(Project project) {
@@ -118,5 +122,24 @@ public class ProjectService {
         project.setCreatedAt(LocalDateTime.now());
         project.setStatus(Status.IN_PROGRESS);
         return project;
+    }
+
+    private TaskResponse mapToTaskResponse(Task task) {
+    return new TaskResponse(
+            task.getId(),
+            task.getName(),
+            task.getDescription(),
+            task.getStatus(),
+            task.getDeadline(),
+            task.getCreatedAt(),
+            task.getUpdatedAt(),
+            task.getProject().getId(),
+            task.getProject().getName());
+}
+
+    private Project availabilityProjectCheck(Long id, User owner) {
+        return PROJECT_REPOSITORY.findByIdAndOwner(id, owner)
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Project not found with id: " + id + " and owner: " + owner.getUsername()));
     }
 }

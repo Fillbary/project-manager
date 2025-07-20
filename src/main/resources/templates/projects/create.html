@@ -9,49 +9,39 @@
     <link href="/css/styles.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Навигация -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/home">ProjectFlow</a>
             <div class="navbar-nav">
-                <a class="nav-link" th:href="@{/projects-list}">Мои проекты</a>
+                <a class="nav-link" th:href="@{/projects}">Мои проекты</a>
                 <a class="nav-link" th:href="@{/logout}">Выйти</a>
             </div>
         </div>
     </nav>
 
-    <!-- Основной контент -->
     <main class="container">
         <div class="project-form-container">
             <h2 class="project-form__title">Создание нового проекта</h2>
 
-            <form class="project-form" th:action="@{/create}" method="post" th:object="${projectRequest}">
-                <!-- Название проекта -->
+            <form class="project-form" th:action="@{/projects/create}" method="post" th:object="${projectRequest}">
                 <div>
                     <label for="name">Название проекта*</label>
-                    <input type="text" id="name" th:field="*{name}"
-                           placeholder="Введите название (от 3 до 100 символов)" required>
+                    <input type="text" id="name" th:field="*{name}" required>
                     <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-message"></span>
                 </div>
 
-                <!-- Описание проекта -->
                 <div>
                     <label for="description">Описание</label>
-                    <textarea id="description" th:field="*{description}"
-                              placeholder="Опишите ваш проект (необязательно)"></textarea>
+                    <textarea id="description" th:field="*{description}"></textarea>
                 </div>
 
-                <!-- Кнопки действий -->
                 <div class="project-form__actions">
-                    <a th:href="@{/projects-list}" class="project-form__link project-form__link--secondary">
+                    <a th:href="@{/projects}" class="project-form__link project-form__link--secondary">
                         ← Назад к списку
                     </a>
                     <button type="submit" class="project-form__submit">
                         Создать проект
                     </button>
-                    <a href="/home" class="project-form__link">
-                        На главную
-                    </a>
                 </div>
             </form>
         </div>

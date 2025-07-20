@@ -9,65 +9,42 @@
     <link href="/css/styles.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Навигация -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/home">ProjectFlow</a>
             <div class="navbar-nav">
-                <a class="nav-link active" th:href="@{/projects-list}">Мои проекты</a>
+                <a class="nav-link active" th:href="@{/projects}">Мои проекты</a>
                 <a class="nav-link" th:href="@{/logout}">Выйти</a>
             </div>
         </div>
     </nav>
 
-    <!-- Основной контент -->
     <main class="container">
         <div class="projects-list-container">
             <h1 class="projects-list__title">Мои проекты</h1>
 
-            <!-- Уведомления -->
-            <div th:if="${message}" class="alert alert-success" role="alert" th:text="${message}"></div>
-
-            <!-- Список проектов -->
-            <ul class="projects-list" th:if="${not #lists.isEmpty(projects)}">
-                <li class="project-item" th:each="project : ${projects}">
-                    <a th:href="@{/details/{id}(id=${project.id})}"
-                       class="project-item__link"
-                       th:text="${project.name}"></a>
-
-                    <div class="project-item__meta">
-                        <span>Создан: </span>
-                        <span th:text="${#temporals.format(project.createdAt, 'dd.MM.yyyy')}"></span>
+            <div th:if="${not #lists.isEmpty(projects)}" class="row">
+                <div class="col-md-4 mb-4" th:each="project : ${projects}">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${project.name}"></h5>
+                            <p class="card-text" th:text="${project.description} ?: 'Описание отсутствует'"></p>
+                            <a th:href="@{/projects/{id}(id=${project.id})}" class="btn btn-primary">
+                                Подробнее
+                            </a>
+                        </div>
                     </div>
-
-                    <div class="project-meta__item" th:if="${project.updatedAt}">
-                        <span class="project-meta__label">Обновлен</span>
-                        <span class="project-meta__value" th:text="${#temporals.format(project.updatedAt, 'dd.MM.yyyy HH:mm')}"></span>
-                    </div>
-
-                    <div class="project-item__meta">
-                        <span th:switch="${project.status.name()}" class="badge">
-                            <span th:case="'COMPLETED'" class="status-completed">Завершен</span>
-                            <span th:case="'IN_PROGRESS'" class="status-in-progress">В работе</span>
-                            <span th:case="*" class="status-planned">Запланирован</span>
-                        </span>
-                    </div>
-                </li>
-            </ul>
-
-            <!-- Сообщение при отсутствии проектов -->
-            <div th:if="${#lists.isEmpty(projects)}" class="text-center py-4">
-                <p class="lead">У вас пока нет проектов</p>
-                <a th:href="@{/create}" class="btn btn-primary">Создать первый проект</a>
+                </div>
             </div>
 
-            <!-- Действия -->
-            <div class="projects-list__actions">
-                <a th:href="@{/create}" class="btn btn-primary">
+            <div th:if="${#lists.isEmpty(projects)}" class="text-center py-4">
+                <p class="lead">У вас пока нет проектов</p>
+                <a th:href="@{/projects/create}" class="btn btn-primary">Создать первый проект</a>
+            </div>
+
+            <div class="text-center mt-4">
+                <a th:href="@{/projects/create}" class="btn btn-primary">
                     + Создать новый проект
-                </a>
-                <a th:href="@{/home}" class="btn btn-outline-secondary">
-                    На главную
                 </a>
             </div>
         </div>

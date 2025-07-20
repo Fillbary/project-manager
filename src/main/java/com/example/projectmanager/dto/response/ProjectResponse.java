@@ -3,6 +3,7 @@ package com.example.projectmanager.dto.response;
 import com.example.projectmanager.entity.Status;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ProjectResponse {
     private long id;
@@ -12,6 +13,8 @@ public class ProjectResponse {
     private LocalDateTime updatedAt;
     private String ownerName;
     private Status status;
+    private List<TaskResponse> tasks;
+
     public ProjectResponse(long id, String name, String description, LocalDateTime createdAd,
                            LocalDateTime updatedAt, String ownerName, Status status) {
         this.id = id;
@@ -79,5 +82,13 @@ public class ProjectResponse {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public List<TaskResponse> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<TaskResponse> tasks) {
+        this.tasks = tasks;
     }
 }

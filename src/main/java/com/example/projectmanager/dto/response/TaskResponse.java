@@ -2,8 +2,9 @@ package com.example.projectmanager.dto.response;
 
 import com.example.projectmanager.entity.Project;
 import com.example.projectmanager.entity.Status;
-import com.example.projectmanager.entity.User;
+import jakarta.validation.constraints.Future;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class TaskResponse {
@@ -11,16 +12,15 @@ public class TaskResponse {
     private String name;
     private String description;
     private Status status;
-    private LocalDateTime deadline;
+    private LocalDate deadline;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private User owner;
-    private Project project;
+    private Long projectId;
+    private String projectName;
 
     public TaskResponse(Long id, String name, String description,
-                        Status status, LocalDateTime deadline,
-                        LocalDateTime createdAt, LocalDateTime updatedAt,
-                        User owner, Project project) {
+                        Status status, LocalDate deadline,
+                        LocalDateTime createdAt, LocalDateTime updatedAt, Long projectId, String projectName) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -28,8 +28,8 @@ public class TaskResponse {
         this.deadline = deadline;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.owner = owner;
-        this.project = project;
+        this.projectId = projectId;
+        this.projectName = projectName;
     }
 
     public TaskResponse() {}
@@ -66,11 +66,11 @@ public class TaskResponse {
         this.status = status;
     }
 
-    public LocalDateTime getDeadline() {
+    public @Future(message = "The deadline must be in the future") LocalDate getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDateTime deadline) {
+    public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
     }
 
@@ -90,19 +90,19 @@ public class TaskResponse {
         this.updatedAt = updatedAt;
     }
 
-    public User getOwner() {
-        return owner;
+    public Long getProjectId() {
+        return projectId;
     }
 
-    public void setOwner(User owner) {
-        this.owner = owner;
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 
-    public Project getProject() {
-        return project;
+    public String getProjectName() {
+        return projectName;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 }
