@@ -20,85 +20,68 @@
     </nav>
 
     <main class="container">
-        <div class="task-details-container mt-4" th:if="${task}">
-            <!-- Хлебные крошки -->
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a th:href="@{/projects}">Все проекты</a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a th:href="@{/projects/{projectId}(projectId=${task.projectId})}"
-                           th:text="${task.projectName}"></a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page" th:text="${task.name}"></li>
-                </ol>
-            </nav>
+        <div class="project-details-container">
+            <h1 class="project-details__title" th:text="${task.name}"></h1>
 
-            <h1 class="task-details__title mb-4" th:text="${task.name}"></h1>
-            <p class="task-details__description mb-4" th:text="${task.description} ?: 'Описание отсутствует'"></p>
+            <div class="d-flex align-items-center mb-3">
+                <span class="badge me-2"
+                      th:classappend="${task.status == T(com.example.projectmanager.entity.Status).COMPLETED} ? 'bg-success' : 'bg-primary'"
+                      th:text="${task.status == T(com.example.projectmanager.entity.Status).COMPLETED} ? 'Завершена' : 'В работе'">
+                </span>
 
-            <!-- Действия -->
-            <div class="task-actions mb-4 d-flex flex-wrap gap-3">
-                <form th:action="@{/projects/{projectId}/tasks/{taskId}/complete(projectId=${task.projectId}, taskId=${task.id})}"
-                      method="post">
-                    <button type="submit" class="btn btn-success">
+                <span class="text-muted" th:if="${task.deadline != null}">
+                    Срок выполнения: <span th:text="${#temporals.format(task.deadline, 'dd.MM.yyyy')}"></span>
+                </span>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Описание задачи</h5>
+                    <p class="card-text" th:text="${task.description ?: 'Описание отсутствует'}"></p>
+                </div>
+            </div>
+
+            <div class="project-meta mb-4">
+                <div class="project-meta__item">
+                    <span class="project-meta__label">Проект</span>
+                    <span class="project-meta__value">
+                        <a th:href="@{/projects/{id}(id=${task.projectId})}" th:text="${task.projectName}"></a>
+                    </span>
+                </div>
+                <div class="project-meta__item">
+                    <span class="project-meta__label">Дата создания</span>
+                    <span class="project-meta__value" th:text="${#temporals.format(task.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+                </div>
+                <div class="project-meta__item" th:if="${task.updatedAt != null}">
+                    <span class="project-meta__label">Последнее обновление</span>
+                    <span class="project-meta__value" th:text="${#temporals.format(task.updatedAt, 'dd.MM.yyyy HH:mm')}"></span>
+                </div>
+            </div>
+
+            <div class="project-actions">
+                <form th:action="@{/projects/{projectId}/tasks/{taskId}/complete(projectId=${task.projectId}, taskId=${task.id})}" method="post">
+                    <button type="submit" class="btn btn-outline-success">
                         <span th:text="${task.status == T(com.example.projectmanager.entity.Status).COMPLETED} ?
                                      'Вернуть в работу' : 'Завершить задачу'"></span>
                     </button>
                 </form>
 
                 <a th:href="@{/projects/{projectId}/tasks/{taskId}/edit-task(projectId=${task.projectId}, taskId=${task.id})}"
-                   class="btn btn-primary">
+                   class="btn btn-outline-primary">
                     Редактировать
                 </a>
 
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                     Удалить задачу
                 </button>
 
-                <a th:href="@{/projects/{projectId}(projectId=${task.projectId})}" class="btn btn-secondary">
+                <a th:href="@{/projects/{id}(id=${task.projectId})}" class="btn btn-outline-secondary">
                     ← Назад к проекту
                 </a>
             </div>
-
-            <!-- Мета-информация -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title mb-4">Детали задачи</h5>
-                    <div class="task-meta">
-                        <div class="task-meta__item mb-3">
-                            <span class="task-meta__label fw-bold">Статус:</span>
-                            <span class="badge"
-                                  th:classappend="${task.status == T(com.example.projectmanager.entity.Status).COMPLETED}
-                                    ? 'bg-success' : 'bg-primary'"
-                                  th:text="${task.getStatus()}"></span>
-                        </div>
-                        <div class="task-meta__item mb-3" th:if="${task.deadline}">
-                            <span class="task-meta__label fw-bold">Дедлайн:</span>
-                            <span class="task-meta__value" th:text="${#temporals.format(task.deadline, 'dd.MM.yyyy')}"></span>
-                            <span th:if="${task.status != T(com.example.projectmanager.entity.Status).COMPLETED
-                                        && task.deadline.isBefore(T(java.time.LocalDate).now())}"
-                                  class="badge bg-warning text-dark ms-2">Просрочена</span>
-                        </div>
-                        <div class="task-meta__item mb-3">
-                            <span class="task-meta__label fw-bold">Создана:</span>
-                            <span class="task-meta__value" th:text="${#temporals.format(task.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
-                        </div>
-                        <div class="task-meta__item mb-3" th:if="${task.updatedAt}">
-                            <span class="task-meta__label fw-bold">Обновлена:</span>
-                            <span class="task-meta__value" th:text="${#temporals.format(task.updatedAt, 'dd.MM.yyyy HH:mm')}"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Уведомления -->
-            <div th:if="${success}" class="alert alert-success mt-4" role="alert" th:text="${success}"></div>
-            <div th:if="${error}" class="alert alert-danger mt-4" role="alert" th:text="${error}"></div>
         </div>
 
-        <!-- Модальное окно удаления -->
+        <!-- Модальное окно подтверждения удаления -->
         <div class="modal fade" id="deleteModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -108,12 +91,11 @@
                     </div>
                     <div class="modal-body">
                         <p>Вы уверены, что хотите удалить задачу <strong th:text="${task.name}"></strong>?</p>
-                        <p class="text-danger">Это действие нельзя отменить.</p>
+                        <p class="text-muted">Это действие нельзя отменить.</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <form th:action="@{/projects/{projectId}/tasks/{taskId}/delete(projectId=${task.projectId}, taskId=${task.id})}"
-                              method="post">
+                        <form th:action="@{/projects/{projectId}/tasks/{taskId}/delete(projectId=${task.projectId}, taskId=${task.id})}" method="post">
                             <button type="submit" class="btn btn-danger">Удалить</button>
                         </form>
                     </div>
